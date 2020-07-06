@@ -1,0 +1,207 @@
+btpd 0.16:
+----------
+
+Misc:
+- Added "start all" (start -a) command.
+- Allow adding multiple torrents at once.
+- Custom list formatting options.
+- Man pages for btpd, btcli, and btinfo.
+
+Bug fixes:
+- Handle .torrent files larger than 2MB.
+- http parsing and addrinfo freeing fixes.
+
+btpd 0.15:
+----------
+
+Bug fixes:
+- The event loop could busy loop for up to a millisecond sometimes.
+- On some platforms btpd couldn't initiate connections to other peers.
+- The timer code was broken on MacOS X.
+
+btpd 0.14:
+----------
+
+Misc:
+- IPv6 support.
+- Bans peers with bad data.
+- Better tracker compatability and more reliable tracker communication.
+- Show tracker counts in btcli stat.
+- Compiles on Solaris 10.
+- Btpd will now signal startup failures via the process exit value and
+  print the failure reason to stdout.
+- Better shutdown and torrent stop behaviour.
+- Needs pthreads again.
+- Removed libevent in favour of own event loop code.
+
+Bug fixes:
+- An integer array was misaligned, which could cause crashes on systems
+  with alignment requirements. E.g., on XScale arm.
+- An error in the torrent parsing code could cause crashes.
+- The '--topdir' option to btcli add didn't work properly for single file
+  torrents.
+- The system name lookup scheme is now used. In btpd 0.13 only dns lookups
+  were performed.
+
+btpd 0.13:
+----------
+
+Misc:
+- cURL is no longer required. btpd now uses its own http client.
+- btpd doesn't use threads anymore, so pthreads are not required.
+- Needed parts of libevent are now included in btpd.
+- I/O errors for torrents no longer make btpd shut down. Instead the
+  problematic torrent is stopped.
+- Added the option '--ip' to specify the ip address btpd will report
+  to trackers.
+- Resume file format changed. Already added torrents will be retested once.
+- The torrent info (ratio etc.) are now saved regularly.
+- Reduced the amount of outgoing data kept in memory.
+
+btpd 0.12:
+----------
+
+Misc:
+- btpd now starts with the same set of active torrents as it had when it was
+  last shut down. The new '--empty-start' option disables this feature.
+- btpd now supports the key tracker extension.
+- btpd now supports the multi tracker extension.
+- btcli list and stat print headers for the presented data. Both commands
+  displays more data than before.
+- Torrent management has changed, with changes to the add and del commands
+  and two new commands, start and stop, as a result. Operation on torrents
+  can now be done by number as well as torrent file.
+- A small delay has been added for contacting the same announce URL.
+- btpd sends keepalive messages.
+- The number of have messages sent has been reduced by not sending them to
+  peers that already have the piece.
+- The structure of the torrents directory in the btpd directory has changed.
+  It is best to remove it before running btpd 0.12.
+
+Bug fixes:
+- Zero sized files in a torrent were not always created.
+
+btpd 0.11:
+----------
+
+Bug fixes:
+- A file descriptor was closed too early, which could cause btpd to exit
+  with an error message on systems using epoll.
+
+btpd 0.10:
+----------
+
+Misc:
+- The protection mode of the ipc socket can now be specified via the new
+  "--ipcprot" option for btpd.
+
+Bug fixes:
+- The pid file is now written correctly.
+- btpd's "-d" option now works for relative paths too.
+- Add a time out for handshake completion. Prevously btpd could slowly
+  fill with unused incoming connections.
+
+btpd 0.9:
+---------
+
+Misc:
+- Small changes to 'btcli stat' output.
+
+Bug fixes:
+- Use correct value for '--prealloc' default.
+- Stopped torrents now show correct rates (0kB/s).
+- The test of content that has been modified between runs was broken.
+
+btpd 0.8:
+---------
+
+Misc:
+- btpd now requires pthreads.
+- btpd keeps its logs and other information it needs in its own directory.
+  $HOME/.btpd is the default location.
+- Various changes in btpd options ant btcli use. See '--help'.
+- The user chooses where to place content for each torrent.
+- Better disk IO performance.
+- Configureable disk preallocation to reduce file fragmentation.
+- The unchoke algorithm is global instead of per torrent. The number
+  of peers to upload to is configurable.
+- Tracker errors are displayed in 'btcli stat' and most importantly don't
+  make torrents unload on startup.
+- The rates displayed by btcli are now computed in btpd and are averaged
+  over the last 20 seconds.
+- btpd now compares size and mtime of content to see if the resume file is
+  valid.
+
+Bug fixes:
+- Double uninterest messages could be sent to some peers in endgame mode.
+- A function was called prematurely which could trigger an assert in rare
+  cases.
+
+btpd 0.7:
+---------
+
+Bug fixes:
+- Some communication stupidities was fixed, resulting in better download
+  performance.
+
+btpd 0.6:
+---------
+
+Misc:
+- Set an upper limit on how much data a peer can request at once.
+  This protects from running out of memory because of a greedy peer.
+- End game is more efficient and uses much less memory.
+
+btpd 0.5:
+---------
+
+Bug fixes:
+- The bitfield could be sent too late. This could cause the receiving
+  peer to close the connection.
+
+btpd 0.4:
+---------
+
+Misc:
+- The 0.1 rate limiter is back. It runs at a configurable hz now.
+- Added "--bw-hz" option to btpd.
+- Multiple have messages can be sent in place of a bitfield.
+- If btpd can't write to a peer for 60s, it will be disconnected.
+
+Bug fixes:
+- A calculation error made btpd buggy with small torrents.
+  This caused strange crashes and many reports on bad hashes in the log.
+- The bitfield was sent too early. A peer could miss pieces btpd got
+  while the peer was in handshake.
+- Some situations in end game or with bad hashes could cause a crash.
+
+btpd 0.3:
+---------
+
+Misc:
+- New download strategy.
+- Pipe ten requests instead of five.
+- "-d" option added to btpd.
+- "--with-warn" option added to configure. The default is now
+  to compile with warnings off.
+
+Bug fixes:
+- It was possible for blocks to remain marked as busy when a peer
+  choked or was lost, causing a piece download to wait until end game.
+- The peer wanted level could get too high during end game.
+
+btpd 0.2:
+---------
+
+Misc:
+- A new way to do rate limiting.
+- Compact mode is now used when talking to the tracker.
+
+Bug fixes:
+- A buffer was too small by four bytes, causing a buffer overflow
+  on the heap in certain conditions.
+- An iteration over a list was unsafe and could cause a crash.
+- Unloading a torrent didn't kill peers in handshake for that torrent,
+  and a crash was possible when the handshake finished.
+- The counter for uploaded data was updated too early.
+- Fixed illegal operator for test(1) in configure.
