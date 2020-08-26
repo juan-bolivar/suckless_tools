@@ -13,7 +13,9 @@ static const Block blocks[] = {
 	
 	//{"", "bash ~/scripts/statusbar/servientrega.sh",    			600,		0},
 	
-	{"", "bash ~/scripts/statusbar/battery.sh",      			60,		0},
+	{"", "bash ~/scripts/statusbar/recording.sh",    			0,		12},
+
+        {"", "bash ~/scripts/statusbar/battery.sh",      			60,		0},
 
 	//	  {"", "bash ~/scripts/statusbar/deprisa.sh",    			600,		0},
 
